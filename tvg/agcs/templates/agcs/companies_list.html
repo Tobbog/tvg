@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Select a Company{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<select name="mydropdown" class="styled" onChange="document.location = this.value" value="GO">
+{% for company in companies_list %}
+  <option value="{% url 'agcs:companies_detail' pk=company.pk %}">{{company.name}}</option>
+{% endfor %}
+</select>
+
+<br><br>
+{% for company in companies_list %}
+  <p><a href="{% url 'agcs:companies_detail' pk=company.pk %}">{{company.name}}</a></p>
+
+{% endfor %}
+
+{% else %}
+<p>Please <a href="{% url 'login' %}">log in</a>.</p>
+
+{% endif %}
+{% endblock %}
