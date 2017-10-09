@@ -3,20 +3,66 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<select name="mydropdown" class="styled" onChange="document.location = this.value" value="GO">
-{% for company in companies_list %}
-  <option value="{% url 'agcs:companies_detail' pk=company.pk %}">{{company.name}}</option>
-{% endfor %}
-</select>
+<div class="container" style="margin-top: 15%;">
 
-<br><br>
-{% for company in companies_list %}
-  <p><a href="{% url 'agcs:companies_detail' pk=company.pk %}">{{company.name}}</a></p>
+  <div class="col-md-2"></div>
+  <div class="form-group col-md-8">
 
-{% endfor %}
+    <form name="Testform" action="">
+      <input type="text" class="inputbox form-control" id="answer" style="width: 80%; margin-bottom: 5px;" placeholder="Enter Company Name">
+        <div class="btn btn-default" id="clickBox" style="width: 80%">Search</div>
+    </form>
+  </div>
 
-{% else %}
-<p>Please <a href="{% url 'login' %}">log in</a>.</p>
+  <div class="col-md-2"></div>
+</div>
+
+
+    <div class="container" id="suggest"></div>
+
+
+<script type="text/javascript">
+  var allComps = [];
+  var compIDs = [];
+
+  //put all companies in list:
+  {% for company in context %}
+    allComps.push("{{ company.name }}");
+    compIDs.push("{{ company.id }}");
+  {% endfor %}
+
+  document.getElementById("clickBox").addEventListener("click", function() {
+    if (document.getElementById("answer").value.length > 0) {
+    search();
+  }
+  });
+
+  window.addEventListener('keydown',function(e) {
+  if(e.keyIdentifier=='U+000A' || e.keyIdentifier=='Enter' || e.keyCode==13) {
+    if(e.target.nodeName=='INPUT' && e.target.type=='text') {
+      e.preventDefault();
+      if (document.getElementById("answer").value.length > 0) {
+      search();
+    }
+      return false;}
+    }
+  },
+  true);
+
+
+
+function search() {
+  var j = 0;
+  document.getElementById("suggest").innerHTML = '<table class="table table-hover"> <thead> <tr> <th>Companies containing <span style="color: red">' + document.getElementById("answer").value + '</span></th></tr></thead><tbody id="tbod"></tbody></table>';
+  for (i = 0; i < allComps.length; i++) {
+    if (allComps[i].indexOf(document.getElementById("answer").value.toUpperCase()) !== -1) {
+      j += 1;
+      document.getElementById("tbod").innerHTML += '<tr><th scope=row>' + j + '</th><td><a href="/companies/' + compIDs[i] + '">' +allComps[i] + '</a></td></tr>';
+    }
+  }
+};
+
+</script>
 
 {% endif %}
 {% endblock %}

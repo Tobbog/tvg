@@ -11,9 +11,17 @@ def index(request):
         return render(request, "index.html")
     else:
         return redirect("login")
-    #     return HttpResponse("is authenticated")
-    # else:
-    #     return HttpResponse("not authenticated")
+
+def form(request):
+    list_obj = []
+    # for company in Companies.objects.filter(name__contains="all"):
+    #     list_obj.append(company)
+
+    for company in Companies.objects.all():
+        list_obj.append(company)
+
+    context = {"context": list_obj}
+    return render(request, "companies_list.html", context)
 
 def logout_view(request):
     logout(request)

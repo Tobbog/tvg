@@ -4,7 +4,9 @@
 {% block content %}
 {% if user.is_authenticated %}
 
-  <ul style="list-style: none; position: absolute; top: 25px;">
+<div class="col-md-6">
+
+  <ul style="list-style: none; padding-top: 20px">
     <li><p><strong>Name:</strong> {{companies.name}}</p></li>
     <li><p><strong>DS-Code:</strong> {{companies.DSCD}}</p></li>
     <li><p><strong>ESG-Score:</strong> {{companies.ESG}}</p></li>
@@ -14,8 +16,10 @@
     <li><p><strong>Quality Score:</strong> {{companies.QUAL}}</p></li>
     <li><a href="{% url 'agcs:companies_list' %}"><strong>Back</strong></a></li>
   </ul>
+</div>
 
-  <canvas id="myChart" width="500px" height="500px" style="position: absolute; top: 10px; right: 10px;"></canvas>
+<div class="col-md-6">
+  <canvas id="myChart" width="400%" height="400%"></canvas>
   <script>
   var ctx = document.getElementById("myChart").getContext('2d');
   var myChart = new Chart(ctx, {
@@ -57,9 +61,61 @@
       }
   });
   </script>
+</div>
+
+
+  <div class="chartjs-wrapper col-md-6" style="width: 110%; padding-left: 60px; margin-top: 15px margin-bottom: 10px">
+
+    <canvas id="chartjs-0" class="chartjs" width="undefined" height="undefined"></canvas>
+    <script>
+    new Chart(document.getElementById("chartjs-0"),
+    {"type":"line",
+      "data":{"labels":
+        [{% for year in companies.years_set.all %}
+            {{year.year}},
+        {% endfor %}],
+        "datasets":
+          [{"label":"ESG Score",
+          "data":[{% for year in companies.years_set.all %}
+                    {{year.ESG}},
+                  {% endfor %}],
+          "fill":true,
+          "borderColor":"rgb(255, 206, 86)",
+          "lineTension":0.1},
+          {"label":"Environmental Score",
+          "data":[{% for year in companies.years_set.all %}
+                    {{year.ENV}},
+                  {% endfor %}],
+          "fill":false,
+          "borderColor":"rgb(75, 192, 192)",
+          "lineTension":0.1},
+          {"label":"Social Score",
+          "data":[{% for year in companies.years_set.all %}
+                    {{year.SOC}},
+                  {% endfor %}],
+          "fill":false,
+          "borderColor":"rgb(255,99,132)",
+          "lineTension":0.1},
+          {"label":"Governance Score",
+          "data":[{% for year in companies.years_set.all %}
+                    {{year.CGV}},
+                  {% endfor %}],
+          "fill":false,
+          "borderColor":"rgb(54, 162, 235)",
+          "lineTension":0.1},
+          {"label":"Quality Score",
+          "data":[{% for year in companies.years_set.all %}
+                    {{year.QUAL}},
+                  {% endfor %}],
+          "fill":false,
+          "borderColor":"rgb(121, 23, 49)",
+          "lineTension":0.1}]},"options":{}});
+      </script>
+    </div>
 
 {% else %}
 <p>Please <a href="{% url 'login' %}">log in</a>.</p>
 
 {% endif %}
+
 {% endblock %}

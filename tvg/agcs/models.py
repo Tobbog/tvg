@@ -16,4 +16,14 @@ class Companies(models.Model):
         return self.name + " - " + self.DSCD + " - " + str(self.ESG)
 
 class Years(models.Model):
-    name = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    company = models.ForeignKey(Companies, on_delete=models.CASCADE)
+    year = models.CharField(max_length=4)
+    ESG = models.CharField(max_length=15)
+    ENV = models.CharField(max_length=15)
+    SOC = models.CharField(max_length=15)
+    CGV = models.CharField(max_length=15)
+    QUAL = models.CharField(max_length=15)
+
+
+    def __str__(self):
+        return str(self.company.name) + " - " + str(self.year)
